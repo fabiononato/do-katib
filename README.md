@@ -11,11 +11,11 @@ The main entrypoint to the project is the script containing the [my_model](Conta
 
 The modifications specific to this projects are:
 
-- a [test scrip](Container-Root/test.sh) that checks for the proper set up of the NVIDIA drivers, as this project rely on a GPU version of TF.
+- a [test scrip](Container-Root/test1.sh) that checks for the proper set up of the NVIDIA drivers, as this project rely on a GPU version of TF.
 
 - an [environment file](.env) with a registry and project name specific to this project.
 
-- a tensorflow-gpu [base image](Dockerfile) on our Dockerfile.
+- a tensorflow-gpu [base image](https://github.com/fabiononato/do-katib/blob/master/Dockerfile#L1) on our Dockerfile.
 
 # Katib Templates:
 
