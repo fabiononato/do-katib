@@ -1,4 +1,4 @@
-# *do-katib*: a simple Docker wrapped script to run Katib Experiments in Kubeflow.
+# *do-katib*: a simple Docker wrapped project to run Katib Experiments in Kubeflow.
 
 This Repo contains a simple starter project which wraps a [model method](Container-Root/src/my_awesome_model.py) and parses arguments according to Katib's format.
 
