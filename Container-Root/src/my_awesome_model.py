@@ -4,12 +4,13 @@ import numpy as np
 import tensorflow as tf
 import datetime
 
-# Define a simple Keras model with Callback
-def get_model(learningRate=0.1):
-  model = tf.keras.Sequential()
-  model.add(tf.keras.layers.Dense(1, activation = 'linear', input_dim = 784))
-  model.compile(optimizer=tf.keras.optimizers.RMSprop(lr=learningRate), loss='mean_squared_error', metrics=['mae'])
-  return model
+
+def get_model(learningRate=0.1,activationFunction='linear'):
+    # User Defined a simple Keras model with Callback
+    model = tf.keras.Sequential()
+    model.add(tf.keras.layers.Dense(1, activation = activationFunction, input_dim = 784))
+    model.compile(optimizer=tf.keras.optimizers.RMSprop(lr=learningRate), loss='mean_squared_error', metrics=['mae'])
+    return model
 
 class KatibLossPrint(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
@@ -27,6 +28,7 @@ def my_model(args):
     #We ar getting command line arguments `args` to set up our model
     my_par1 = args.myParameter1
     my_par2 = args.myParameter2
+    my_par3 = args.myParameter3
 
     # Assume that you have 8GB of GPU memory and want to allocate ~0.8GB if your args.gpuFraction == 0.1:
     gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=args.gpuFraction)
@@ -44,15 +46,13 @@ def my_model(args):
     x_train = x_train.reshape(60000, 784).astype('float32') / 255
     x_test = x_test.reshape(10000, 784).astype('float32') / 255
 
-    model = get_model(learningRate=my_par2)
+    model = get_model(learningRate=my_par2, activationFunction=my_par3)
     _ = model.fit(x_train, y_train,
           batch_size=64,
           epochs=my_par1,
           steps_per_epoch=5,
           verbose=0,
           callbacks=[KatibLossPrint()])
-
-    # Remember to print out the
 
 
 if __name__ == '__main__':
@@ -66,7 +66,9 @@ if __name__ == '__main__':
     parser.add_argument('--myParameter1', type=int, default=3,
                     help='Hyperparameter 1 - Epoches')
     parser.add_argument('--myParameter2', type=float, default=0.01,
-                    help='Hyperparameter 2')
+                    help='Hyperparameter 2 - Learning Rate')
+    parser.add_argument('--myParameter3', type=str, default='linear',
+                    help='Hyperparameter 3 - Activation Function')
 
 
     args = parser.parse_args()

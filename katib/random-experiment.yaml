@@ -1,0 +1,60 @@
+apiVersion: "kubeflow.org/v1alpha3"
+kind: Experiment
+metadata:
+  namespace: kubeflow
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: do-katib-experiments
+spec:
+  objective:
+    type: minimize
+    goal: 0.01
+    objectiveMetricName: mean_absolute_error
+    additionalMetricNames:
+      - loss
+  algorithm:
+    algorithmName: random
+  parallelTrialCount: 2
+  maxTrialCount: 10
+  maxFailedTrialCount: 2
+  parameters:
+    - name: --myParameter2
+      parameterType: double
+      feasibleSpace:
+        min: "0.001"
+        max: "0.3"
+    - name: --myParameter3
+      parameterType: categorical
+      feasibleSpace:
+        list:
+        - linear
+        - relu
+        - softmax
+        - tanh
+  trialTemplate:
+    goTemplate:
+        rawTemplate: |-
+          apiVersion: batch/v1
+          kind: Job
+          metadata:
+            name: {{.Trial}}
+            namespace: {{.NameSpace}}
+          spec:
+            template:
+              spec:
+                containers:
+                - name: {{.Trial}}
+                  image: fabiononato/do-katib
+                  command:
+                  - "python"
+                  - "/src/my_awesome_model.py"
+                  - "--gpuFraction=0.35"
+                  - "--myParameter1=50"
+                  {{- with .HyperParameters}}
+                  {{- range .}}
+                  - "{{.Name}}={{.Value}}"
+                  {{- end}}
+                  {{- end}}
+                restartPolicy: Never
+                imagePullSecrets:
+                  - name: regcred
