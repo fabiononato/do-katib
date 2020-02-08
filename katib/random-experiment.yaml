@@ -48,7 +48,7 @@ spec:
                   command:
                   - "python"
                   - "/src/my_awesome_model.py"
-                  - "--gpuFraction=0.35"
+                  - "--gpuFraction=0.40"
                   - "--myParameter1=50"
                   {{- with .HyperParameters}}
                   {{- range .}}
